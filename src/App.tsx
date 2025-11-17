@@ -155,6 +155,7 @@ const emptySurvey: SurveyState = {
 const App: React.FC = () => {
   const [survey, setSurvey] = useState<SurveyState>(emptySurvey);
   const [showJson, setShowJson] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const updateCompany = (field: keyof CompanyInfo, value: string) => {
     setSurvey((prev) => ({
@@ -211,14 +212,43 @@ const App: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setShowJson(true);
-  };
-
   const handleReset = () => {
     setSurvey(emptySurvey);
     setShowJson(false);
+  };
+
+  const handlePreviewJson = () => {
+    setShowJson(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setShowJson(false);
+
+    try {
+      const response = await fetch("/api/submit-survey", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(survey),
+      });
+
+      if (!response.ok) {
+        console.error("Submit failed", await response.text());
+        alert("There was a problem submitting your survey. Please try again.");
+        return;
+      }
+
+      alert("Thank you, your survey has been submitted to RANZ.");
+      handleReset();
+    } catch (err) {
+      console.error("Submit error", err);
+      alert("Network error submitting survey.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -255,6 +285,7 @@ const App: React.FC = () => {
                   onChange={(e) =>
                     updateCompany("companyName", e.target.value)
                   }
+                  required
                 />
               </div>
               <div>
@@ -273,6 +304,7 @@ const App: React.FC = () => {
                   className="select"
                   value={survey.company.region}
                   onChange={(e) => updateCompany("region", e.target.value)}
+                  required
                 >
                   <option value="">Select region</option>
                   <option value="Northland">Northland</option>
@@ -492,8 +524,19 @@ const App: React.FC = () => {
           </section>
 
           <div className="button-row">
-            <button type="submit" className="button-primary">
-              Preview survey data
+            <button
+              type="submit"
+              className="button-primary"
+              disabled={submitting}
+            >
+              {submitting ? "Submitting..." : "Submit survey"}
+            </button>
+            <button
+              type="button"
+              className="button-secondary"
+              onClick={handlePreviewJson}
+            >
+              Preview JSON payload
             </button>
             <button
               type="button"
@@ -509,8 +552,7 @@ const App: React.FC = () => {
           <div className="json-panel">
             <p className="json-title">Survey payload</p>
             <p className="json-subtitle">
-              This is what you can POST to a RANZ API for storage and
-              aggregation.
+              This is the JSON sent to the RANZ survey API.
             </p>
             <pre>{JSON.stringify(survey, null, 2)}</pre>
           </div>
@@ -521,3 +563,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+
