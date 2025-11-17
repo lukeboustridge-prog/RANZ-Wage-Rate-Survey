@@ -1,6 +1,15 @@
 import React, { useState } from "react";
+import ranzLogo from "./assets/ranz-logo.png";
 
-type ExperienceBand = "1_year" | "3_years" | "6_years" | "8_plus" | "apprentice_1" | "apprentice_2" | "apprentice_3" | "apprentice_4";
+type ExperienceBand =
+  | "1_year"
+  | "3_years"
+  | "6_years"
+  | "8_plus"
+  | "apprentice_1"
+  | "apprentice_2"
+  | "apprentice_3"
+  | "apprentice_4";
 
 type RoleKey =
   | "qualified_residential"
@@ -23,12 +32,12 @@ interface RoleDefinition {
 const ROLE_DEFS: RoleDefinition[] = [
   {
     key: "qualified_residential",
-    label: "Qualified Roofer – Residential / Re-roof",
+    label: "Qualified Roofer, Residential / Re-roof",
     bands: ["1_year", "3_years", "6_years", "8_plus"],
   },
   {
     key: "qualified_commercial",
-    label: "Qualified Roofer – Commercial / Industrial",
+    label: "Qualified Roofer, Commercial / Industrial",
     bands: ["1_year", "3_years", "6_years", "8_plus"],
   },
   {
@@ -53,12 +62,12 @@ const ROLE_DEFS: RoleDefinition[] = [
   },
   {
     key: "estimator",
-    label: "Estimator / Quantity Surveyor – Roofing",
+    label: "Estimator / Quantity Surveyor, Roofing",
     bands: ["1_year", "3_years", "6_years", "8_plus"],
   },
   {
     key: "project_manager",
-    label: "Project Manager – Roofing",
+    label: "Project Manager, Roofing",
     bands: ["1_year", "3_years", "6_years", "8_plus"],
   },
   {
@@ -97,7 +106,7 @@ type RateState = {
 
 interface OvertimeSettings {
   hoursBeforeOvertime: string;
-  overtimeMultiplier: string; // like 1.5, 2.0
+  overtimeMultiplier: string;
   notes: string;
 }
 
@@ -204,7 +213,6 @@ const App: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // At this point you can POST `survey` to your API
     setShowJson(true);
   };
 
@@ -214,46 +222,45 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        {/* Header */}
-        <header className="mb-8">
-          {/* Replace this with actual RANZ logo img tag when you have it */}
-          <h1 className="text-3xl font-bold">
-            RANZ Roofing Wage and Charge-out Survey
-          </h1>
-          <p className="mt-3 text-sm text-slate-700">
-            This survey collects anonymous wage and charge-out information from
-            Roofing Association of New Zealand members. Results will be used to
-            build industry benchmarks by region and role, not to identify any
-            individual business. Please answer based on typical current rates
-            for your company, excluding one-off arrangements.
-          </p>
+    <div className="app-root">
+      <div className="app-shell">
+        <header className="app-header">
+          <img
+            src={ranzLogo}
+            alt="Roofing Association of New Zealand"
+            className="app-header-logo"
+          />
+          <div>
+            <h1 className="app-title">RANZ Roofing Wage and Rate Survey</h1>
+            <p className="app-subtitle">
+              This tool lets RANZ members enter typical wages and charge out
+              rates for key roofing roles. Data is used to build industry
+              benchmarks by region, not to publish individual company figures.
+            </p>
+          </div>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Company info */}
-          <section className="bg-white rounded-xl shadow p-5">
-            <h2 className="text-xl font-semibold mb-4">Company details</h2>
-            <div className="grid md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit}>
+          <section className="app-section">
+            <h2 className="app-section-title">Company details</h2>
+            <p className="app-section-help">
+              Basic context so results can be grouped by region and company size.
+            </p>
+            <div className="grid-two">
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Company name
-                </label>
+                <label className="label">Company name</label>
                 <input
-                  type="text"
-                  className="w-full border rounded px-2 py-1 text-sm"
+                  className="input"
                   value={survey.company.companyName}
-                  onChange={(e) => updateCompany("companyName", e.target.value)}
+                  onChange={(e) =>
+                    updateCompany("companyName", e.target.value)
+                  }
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  RANZ member number (optional)
-                </label>
+                <label className="label">RANZ member number (optional)</label>
                 <input
-                  type="text"
-                  className="w-full border rounded px-2 py-1 text-sm"
+                  className="input"
                   value={survey.company.ranzMemberNumber}
                   onChange={(e) =>
                     updateCompany("ranzMemberNumber", e.target.value)
@@ -261,11 +268,9 @@ const App: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Region
-                </label>
+                <label className="label">Region</label>
                 <select
-                  className="w-full border rounded px-2 py-1 text-sm"
+                  className="select"
                   value={survey.company.region}
                   onChange={(e) => updateCompany("region", e.target.value)}
                 >
@@ -277,7 +282,9 @@ const App: React.FC = () => {
                   <option value="Gisborne">Gisborne</option>
                   <option value="Hawkes Bay">Hawkes Bay</option>
                   <option value="Taranaki">Taranaki</option>
-                  <option value="Manawatu-Whanganui">Manawatu-Whanganui</option>
+                  <option value="Manawatu-Whanganui">
+                    Manawatu Whanganui
+                  </option>
                   <option value="Wellington">Wellington</option>
                   <option value="Tasman">Tasman</option>
                   <option value="Nelson">Nelson</option>
@@ -289,46 +296,39 @@ const App: React.FC = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="label">
                   Total staff (including apprentices and office)
                 </label>
                 <input
                   type="number"
-                  min={0}
-                  className="w-full border rounded px-2 py-1 text-sm"
+                  className="input"
                   value={survey.company.totalStaff}
-                  onChange={(e) => updateCompany("totalStaff", e.target.value)}
+                  onChange={(e) =>
+                    updateCompany("totalStaff", e.target.value)
+                  }
                 />
               </div>
             </div>
           </section>
 
-          {/* Wage tables */}
-          <section className="bg-white rounded-xl shadow p-5 space-y-6">
-            <h2 className="text-xl font-semibold mb-2">
-              Hourly and charge-out rates
+          <section className="app-section">
+            <h2 className="app-section-title">
+              Hourly and charge out rates by role
             </h2>
-            <p className="text-sm text-slate-700 mb-2">
-              For each role that you employ, please enter the typical base
-              hourly pay and standard charge-out rate (if applicable) for that
-              level of experience. If you do not employ a role or do not have a
-              particular experience band, leave those fields blank.
+            <p className="app-section-help">
+              Only fill in rows for roles you actually employ. Leave fields
+              blank if a band does not apply in your business.
             </p>
-
             {ROLE_DEFS.map((role) => (
-              <div key={role.key} className="border rounded-lg p-3 mb-4">
-                <h3 className="font-semibold text-sm mb-2">{role.label}</h3>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full text-xs border">
+              <div key={role.key} className="role-card">
+                <p className="role-title">{role.label}</p>
+                <div style={{ overflowX: "auto" }}>
+                  <table className="table">
                     <thead>
-                      <tr className="bg-slate-100">
-                        <th className="border px-2 py-1 text-left">Band</th>
-                        <th className="border px-2 py-1 text-left">
-                          Hourly rate (gross, $/hr)
-                        </th>
-                        <th className="border px-2 py-1 text-left">
-                          Charge-out rate (if used, $/hr)
-                        </th>
+                      <tr>
+                        <th>Band</th>
+                        <th>Hourly rate, gross, dollars per hour</th>
+                        <th>Charge out rate, dollars per hour</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -337,15 +337,11 @@ const App: React.FC = () => {
                           survey.rates[role.key]?.[band] || ({} as RateEntry);
                         return (
                           <tr key={band}>
-                            <td className="border px-2 py-1">
-                              {BAND_LABELS[band]}
-                            </td>
-                            <td className="border px-2 py-1">
+                            <td>{BAND_LABELS[band]}</td>
+                            <td>
                               <input
                                 type="number"
-                                min={0}
-                                step={0.01}
-                                className="w-full border rounded px-1 py-0.5"
+                                className="input"
                                 value={entry.hourlyRate || ""}
                                 onChange={(e) =>
                                   updateRate(
@@ -357,12 +353,10 @@ const App: React.FC = () => {
                                 }
                               />
                             </td>
-                            <td className="border px-2 py-1">
+                            <td>
                               <input
                                 type="number"
-                                min={0}
-                                step={0.01}
-                                className="w-full border rounded px-1 py-0.5"
+                                className="input"
                                 value={entry.chargeOutRate || ""}
                                 onChange={(e) =>
                                   updateRate(
@@ -384,128 +378,108 @@ const App: React.FC = () => {
             ))}
           </section>
 
-          {/* Overtime */}
-          <section className="bg-white rounded-xl shadow p-5">
-            <h2 className="text-xl font-semibold mb-2">Overtime settings</h2>
-            <p className="text-sm text-slate-700 mb-3">
-              Please describe your standard overtime trigger and rates for field
-              roofing staff. If different roles have different rules, describe
-              that in the notes.
+          <section className="app-section">
+            <h2 className="app-section-title">Overtime settings</h2>
+            <p className="app-section-help">
+              Typical overtime rules for field roofing staff. If it varies by
+              role, explain that in the notes.
             </p>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid-two">
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="label">
                   Hours per week before overtime applies
                 </label>
                 <input
                   type="number"
-                  min={0}
-                  className="w-full border rounded px-2 py-1 text-sm"
+                  className="input"
                   value={survey.overtime.hoursBeforeOvertime}
                   onChange={(e) =>
                     updateOvertime("hoursBeforeOvertime", e.target.value)
                   }
-                  placeholder="e.g. 40, 45, 50"
+                  placeholder="For example 40, 45, 50"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Typical overtime multiplier
-                </label>
+                <label className="label">Typical overtime multiplier</label>
                 <input
-                  type="text"
-                  className="w-full border rounded px-2 py-1 text-sm"
+                  className="input"
                   value={survey.overtime.overtimeMultiplier}
                   onChange={(e) =>
                     updateOvertime("overtimeMultiplier", e.target.value)
                   }
-                  placeholder="e.g. 1.5x time and a half, 2.0x"
+                  placeholder="For example 1.5x, 2.0x"
                 />
               </div>
             </div>
-            <div className="mt-3">
-              <label className="block text-sm font-medium mb-1">
-                Overtime notes
-              </label>
+            <div style={{ marginTop: 10 }}>
+              <label className="label">Overtime notes</label>
               <textarea
-                className="w-full border rounded px-2 py-1 text-sm"
+                className="textarea"
                 rows={3}
                 value={survey.overtime.notes}
-                onChange={(e) => updateOvertime("notes", e.target.value)}
-                placeholder="Example: Time and a half after 45 hours for roofers and apprentices, double time on Sundays, no overtime for office staff."
+                onChange={(e) =>
+                  updateOvertime("notes", e.target.value)
+                }
+                placeholder="Example, time and a half after 45 hours for roofers and apprentices, double time on Sundays."
               />
             </div>
           </section>
 
-          {/* Mileage and vehicle */}
-          <section className="bg-white rounded-xl shadow p-5">
-            <h2 className="text-xl font-semibold mb-2">
-              Mileage, vehicle and travel
-            </h2>
-            <p className="text-sm text-slate-700 mb-3">
-              Please describe your typical mileage or vehicle contribution for
-              staff using their own vehicles for roofing work, or any standard
-              travel allowances.
+          <section className="app-section">
+            <h2 className="app-section-title">Mileage, vehicle and travel</h2>
+            <p className="app-section-help">
+              How you usually handle travel costs for staff going to roofing
+              sites.
             </p>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid-two">
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Per km mileage rate ($/km)
-                </label>
+                <label className="label">Per kilometre rate, dollars</label>
                 <input
                   type="number"
-                  min={0}
-                  step={0.01}
-                  className="w-full border rounded px-2 py-1 text-sm"
+                  className="input"
                   value={survey.mileage.perKmRate}
                   onChange={(e) =>
                     updateMileage("perKmRate", e.target.value)
                   }
-                  placeholder="e.g. 0.85"
+                  placeholder="For example 0.85"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Flat daily travel allowance ($/day)
-                </label>
+                <label className="label">Flat daily allowance, dollars</label>
                 <input
                   type="number"
-                  min={0}
-                  step={0.01}
-                  className="w-full border rounded px-2 py-1 text-sm"
+                  className="input"
                   value={survey.mileage.flatDailyRate}
                   onChange={(e) =>
                     updateMileage("flatDailyRate", e.target.value)
                   }
-                  placeholder="e.g. 20"
+                  placeholder="For example 20"
                 />
               </div>
             </div>
-            <div className="mt-3">
-              <label className="block text-sm font-medium mb-1">
-                Vehicle and travel notes
-              </label>
+            <div style={{ marginTop: 10 }}>
+              <label className="label">Vehicle and travel notes</label>
               <textarea
-                className="w-full border rounded px-2 py-1 text-sm"
+                className="textarea"
                 rows={3}
                 value={survey.mileage.notes}
-                onChange={(e) => updateMileage("notes", e.target.value)}
-                placeholder="Example: Company ute for foremen and project managers, per km mileage for apprentices using their own vehicle to get to site, overnight allowance for out of town roofing work."
+                onChange={(e) =>
+                  updateMileage("notes", e.target.value)
+                }
+                placeholder="Example, company ute for foremen, mileage for apprentices using their own vehicle."
               />
             </div>
           </section>
 
-          {/* Other benefits */}
-          <section className="bg-white rounded-xl shadow p-5">
-            <h2 className="text-xl font-semibold mb-2">Other benefits</h2>
-            <p className="text-sm text-slate-700 mb-3">
-              List any other common benefits that affect the overall package for
-              roofing staff, for example height money, tool allowance,
-              on-call allowance, training support, health insurance, or bonus
-              schemes.
+          <section className="app-section">
+            <h2 className="app-section-title">Other benefits</h2>
+            <p className="app-section-help">
+              Anything else that affects the effective package, such as height
+              money, tool allowance, health insurance, bonuses or training
+              support.
             </p>
             <textarea
-              className="w-full border rounded px-2 py-1 text-sm"
+              className="textarea"
               rows={4}
               value={survey.otherBenefits}
               onChange={(e) =>
@@ -517,38 +491,29 @@ const App: React.FC = () => {
             />
           </section>
 
-          {/* Actions */}
-          <section className="flex items-center gap-3">
-            <button
-              type="submit"
-              className="px-4 py-2 rounded bg-slate-900 text-white text-sm font-medium"
-            >
+          <div className="button-row">
+            <button type="submit" className="button-primary">
               Preview survey data
             </button>
             <button
               type="button"
+              className="button-secondary"
               onClick={handleReset}
-              className="px-4 py-2 rounded border text-sm"
             >
               Reset form
             </button>
-          </section>
+          </div>
         </form>
 
-        {/* JSON preview */}
         {showJson && (
-          <section className="mt-8 bg-slate-900 text-slate-50 rounded-xl p-4">
-            <h2 className="text-lg font-semibold mb-2">
-              Survey payload (for API or export)
-            </h2>
-            <p className="text-xs mb-2">
-              This is what will be sent to RANZ when you wire this form to an
-              API. Copy it for testing or hook it straight into your backend.
+          <div className="json-panel">
+            <p className="json-title">Survey payload</p>
+            <p className="json-subtitle">
+              This is what you can POST to a RANZ API for storage and
+              aggregation.
             </p>
-            <pre className="text-xs overflow-x-auto">
-              {JSON.stringify(survey, null, 2)}
-            </pre>
-          </section>
+            <pre>{JSON.stringify(survey, null, 2)}</pre>
+          </div>
         )}
       </div>
     </div>
