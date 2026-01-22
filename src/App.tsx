@@ -87,10 +87,10 @@ const BAND_LABELS: Record<ExperienceBand, string> = {
   "3_years": "3 years",
   "6_years": "6 years",
   "8_plus": "8 years +",
-  "apprentice_1": "Year 1 apprentice",
-  "apprentice_2": "Year 2 apprentice",
-  "apprentice_3": "Year 3 apprentice",
-  "apprentice_4": "Year 4 apprentice",
+  "apprentice_1": "Year 1 / Stage 1",
+  "apprentice_2": "Year 2 / Stage 2",
+  "apprentice_3": "Year 3 / Stage 3",
+  "apprentice_4": "Year 4 / Stage 4",
 };
 
 interface RateEntry {
@@ -121,6 +121,7 @@ interface CompanyInfo {
   ranzMemberNumber: string;
   region: string;
   totalStaff: string;
+  isLbp: boolean;
 }
 
 interface SurveyState {
@@ -137,6 +138,7 @@ const emptySurvey: SurveyState = {
     ranzMemberNumber: "",
     region: "",
     totalStaff: "",
+    isLbp: false,
   },
   rates: {} as RateState,
   overtime: {
@@ -338,8 +340,24 @@ const App: React.FC = () => {
                   onChange={(e) =>
                     updateCompany("totalStaff", e.target.value)
                   }
+                  onWheel={(e) => e.currentTarget.blur()}
                 />
               </div>
+            </div>
+            <div style={{ marginTop: 16 }}>
+              <label className="label" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <input
+                  type="checkbox"
+                  checked={survey.company.isLbp}
+                  onChange={(e) =>
+                    setSurvey((prev) => ({
+                      ...prev,
+                      company: { ...prev.company, isLbp: e.target.checked },
+                    }))
+                  }
+                />
+                Are the wage rates below for Licensed Building Practitioners (LBP)?
+              </label>
             </div>
           </section>
 
@@ -383,6 +401,7 @@ const App: React.FC = () => {
                                     e.target.value
                                   )
                                 }
+                                onWheel={(e) => e.currentTarget.blur()}
                               />
                             </td>
                             <td>
@@ -398,6 +417,7 @@ const App: React.FC = () => {
                                     e.target.value
                                   )
                                 }
+                                onWheel={(e) => e.currentTarget.blur()}
                               />
                             </td>
                           </tr>
@@ -428,6 +448,7 @@ const App: React.FC = () => {
                   onChange={(e) =>
                     updateOvertime("hoursBeforeOvertime", e.target.value)
                   }
+                  onWheel={(e) => e.currentTarget.blur()}
                   placeholder="For example 40, 45, 50"
                 />
               </div>
@@ -473,6 +494,7 @@ const App: React.FC = () => {
                   onChange={(e) =>
                     updateMileage("perKmRate", e.target.value)
                   }
+                  onWheel={(e) => e.currentTarget.blur()}
                   placeholder="For example 0.85"
                 />
               </div>
@@ -485,6 +507,7 @@ const App: React.FC = () => {
                   onChange={(e) =>
                     updateMileage("flatDailyRate", e.target.value)
                   }
+                  onWheel={(e) => e.currentTarget.blur()}
                   placeholder="For example 20"
                 />
               </div>
