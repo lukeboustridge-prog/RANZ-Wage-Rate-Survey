@@ -158,6 +158,19 @@ const App: React.FC = () => {
   const [survey, setSurvey] = useState<SurveyState>(emptySurvey);
   const [showJson, setShowJson] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [activeRoles, setActiveRoles] = useState<Set<RoleKey>>(new Set());
+
+  const toggleRole = (roleKey: RoleKey) => {
+    setActiveRoles((prev) => {
+      const next = new Set(prev);
+      if (next.has(roleKey)) {
+        next.delete(roleKey);
+      } else {
+        next.add(roleKey);
+      }
+      return next;
+    });
+  };
 
   const updateCompany = (field: keyof CompanyInfo, value: string) => {
     setSurvey((prev) => ({
@@ -217,6 +230,7 @@ const App: React.FC = () => {
   const handleReset = () => {
     setSurvey(emptySurvey);
     setShowJson(false);
+    setActiveRoles(new Set());
   };
 
   const handlePreviewJson = () => {
@@ -362,14 +376,85 @@ const App: React.FC = () => {
           </section>
 
           <section className="app-section">
+            <h2 className="app-section-title">Who do you employ?</h2>
+            <p className="app-section-help">
+              Select the roles relevant to your business. We will only show rate
+              tables for the roles you select.
+            </p>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                gap: 12,
+              }}
+            >
+              {ROLE_DEFS.map((role) => {
+                const isActive = activeRoles.has(role.key);
+                return (
+                  <button
+                    key={role.key}
+                    type="button"
+                    onClick={() => toggleRole(role.key)}
+                    style={{
+                      padding: "14px 16px",
+                      borderRadius: 8,
+                      border: isActive ? "2px solid #0f172a" : "2px solid #d1d5db",
+                      backgroundColor: isActive ? "#0f172a" : "#ffffff",
+                      color: isActive ? "#ffffff" : "#374151",
+                      fontWeight: isActive ? 600 : 400,
+                      fontSize: 14,
+                      cursor: "pointer",
+                      textAlign: "left",
+                      transition: "all 0.15s ease",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 8,
+                    }}
+                  >
+                    <span>{role.label}</span>
+                    <span style={{ opacity: 0.8, fontSize: 13 }}>
+                      {isActive ? "Selected ✓" : "Select +"}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="app-section">
             <h2 className="app-section-title">
               Hourly and charge out rates by role
+              {activeRoles.size > 0 && (
+                <span
+                  style={{
+                    marginLeft: 12,
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#6b7280",
+                  }}
+                >
+                  ({activeRoles.size} {activeRoles.size === 1 ? "role" : "roles"} selected)
+                </span>
+              )}
             </h2>
             <p className="app-section-help">
-              Only fill in rows for roles you actually employ. Leave fields
-              blank if a band does not apply in your business.
+              Fill in the rates for each experience band. Leave fields blank if
+              a band does not apply in your business.
             </p>
-            {ROLE_DEFS.map((role) => (
+            {activeRoles.size === 0 ? (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "48px 24px",
+                  color: "#6b7280",
+                  fontSize: 16,
+                }}
+              >
+                👆 Please select at least one role above to enter wage data.
+              </div>
+            ) : (
+              ROLE_DEFS.filter((role) => activeRoles.has(role.key)).map((role) => (
               <div key={role.key} className="role-card">
                 <p className="role-title">{role.label}</p>
                 <div style={{ overflowX: "auto" }}>
@@ -427,7 +512,8 @@ const App: React.FC = () => {
                   </table>
                 </div>
               </div>
-            ))}
+            ))
+            )}
           </section>
 
           <section className="app-section">
