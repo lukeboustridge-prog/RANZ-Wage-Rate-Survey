@@ -391,8 +391,8 @@ const SurveyForm: React.FC = () => {
                     style={{
                       padding: "14px 16px",
                       borderRadius: 8,
-                      border: isActive ? "2px solid #0f172a" : "2px solid #d1d5db",
-                      backgroundColor: isActive ? "#0f172a" : "#ffffff",
+                      border: isActive ? "2px solid #3c4b5d" : "2px solid #d1d5db",
+                      backgroundColor: isActive ? "#3c4b5d" : "#ffffff",
                       color: isActive ? "#ffffff" : "#374151",
                       fontWeight: isActive ? 600 : 400,
                       fontSize: 14,
